@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Essay Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Essay Classification</h1>
+    <p>Paste your essay below to check if it's human-written or LLM-generated:</p>
+    <textarea id="essayInput" placeholder="Enter your essay here..."></textarea><br>
+    <button onclick="classifyEssay()">Classify</button>
+    <div id="result"></div>
+    <script>
+        async function classifyEssay() {
+            const essay = document.getElementById("essayInput").value;
+            const resultDiv = document.getElementById("result");
+
+            const response = await fetch('/classify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ essay }),
+            });
+
+            const data = await response.json();
+            if (data.error) {
+                resultDiv.textContent = `Error: ${data.error}`;
+            } else {
+                resultDiv.textContent = `Result: ${data.result}`;
+            }
+        }
+    </script>
+</body>
+</html>
